@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>待办事项vue重构版</title>
+  <link rel="stylesheet" href="todolist.css">
+  <!-- 引入Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- <script src="todolist.js"></script> -->
+  
+</head>
+
+<body>
+  <div id="app">
+    <!-- 主体盒子 -->
+    <div class='todo-container'>
+      <!-- 头部标题 -->
+      <div class='todo-header'>
+        <h1>今日待办</h1>
+        <p>专注每件小事，高效每一天</p>
+      </div>
+      <!-- 输入框 -->
+      <div class='todo-input-container'>
+        <div class='todo-input'>
+          <!-- v-model 双向绑定，替代手写的 input.value -->
+          <!-- @keydown.enter按下回车键绑定函数 -->
+          <input type='text' v-model="newTodoText" @keydown.enter="addTodo"></input>
+          <!-- @click 替代 addEventListener -->
+          <button @click="addTodo">添加</button>
+        </div>
+      </div>
+      <!-- 内容区 -->
+      <!-- v-for替代for 循环 -->
+      <ul class='todo-conter'>
+        <!-- key属性绑定唯一标识，一般是id，防止vue通过数组索引排序引发错误 -->
+        <li v-for="todo in todos" :key="todo.id" class="todo-item">
+          <!-- @change="toggleTodo(todo.id)"是Vue中绑定事件的语法 -->
+          <!-- 这是 v-on:change的简写，意思是“当这个元素发生 change 事件时”。
+          什么是 change事件？
+          对于复选框：用户点击，勾选状态改变时触发
+          对于输入框：输入内容，失去焦点时触发
+          对于下拉框：选择选项时触发
+          当这个复选框的勾选状态改变时，就调用 toggleTodo函数，并且告诉它要切换哪个任务（通过传递 todo.id这个参数），也可以换成点击时触发 -->
+          <input type="checkbox" class="task-checkbox" :checked="todo.completed" @change="toggleTodo(todo.id)">
+          <!-- 在 :class绑定中，引号的使用有明确规则：
+          1. 数组部分：类名是字符串，所以要加引号
+          2. 对象部分：键是字符串，但可简写，建议全部加上，这样不会出错
+          简写写法（当键是有效变量名时），因为completed是合法JS变量名 -->
+          <span :class="['task-text',{'completed':todo.completed}]">{{ todo.text }}</span>
+          <button class="delete-btn" @click="removeTodo(todo.id)">×</button>
+        </li>
+      </ul>
+      <!-- 底部统计 -->
+      <div class='todo-number'>
+        <div class='todo-number-l'>
+          <span class='task'>{{ totalCount }}</span>项任务（
+          <span class='taskend'>{{ completedCount }}</span>已完成）
+        </div>
+        <div class='todo-number-r'>
+          <button class='removeChecked' @click="removeCompleted">
+            清除已完成
+          </button>
+          <button class='removeAll' @click="removeAll">
+            清除全部任务
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="vuetodolist.js"></script>
+</body>
+
+</html>
